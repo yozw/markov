@@ -18,7 +18,7 @@
 <div class="collapse navbar-collapse navbar-inverse">
   <ul class="nav navbar-nav">
     <li>
-      <a href="http://markov.yoriz.co.uk"><b>Markov Chain simulator</b></a>
+      <a onclick="$('#about-box').modal()"><b>Markov Chain Simulator</b></a>
     </li>
     <li class="dropdown">
       <a class="dropdown-toggle">Examples</a>
@@ -61,6 +61,26 @@
     </div>
   </div>
 </div>
+
+<div id="about-box" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Information</h4>
+      </div>
+      <div class="modal-body">
+        <p><h3>Markov Chain Simulator</h3></p>
+        <p>&copy; 2014 by Y. Zwols</p>
+        <p>This web application is based on jQuery and Bootstrap.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   (function (i, s, o, g, r, a, m) {
     i['GoogleAnalyticsObject'] = r;
