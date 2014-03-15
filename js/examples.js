@@ -1,12 +1,12 @@
 function loadDefaultExample() {
-  var p = 0.3;
+  var p = 0.6;
   var q = 1.0 - p;
   app.setMatrix([
     [p,q,0,0,0],
     [p,0,q,0,0],
     [p,0,0,q,0],
     [p,0,0,0,q],
-    [p,0,0,0,q]]);
+    [1.0,0,0,0,0]]);
 }
 
 function loadCounterExample() {
