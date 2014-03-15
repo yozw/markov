@@ -1,3 +1,7 @@
+function sqr(x) {
+  return x * x;
+}
+
 function createSvgElement(tagName) {
   return document.createElementNS("http://www.w3.org/2000/svg", tagName);
 }
@@ -13,6 +17,12 @@ function Application() {
   this.nstates = 5;
 
   function createGraph() {
+    function updateEdge(edge) {
+      return function(value) {
+        edge.setAttribute("fill-opacity", value);
+      };
+    }
+
    function updateCircle(circle) {
       return function(value) {
         circle.setAttribute("fill-opacity", value);
@@ -25,27 +35,53 @@ function Application() {
       };
     }
 
-    for (var i = 0; i < app.nstates; i++) {
-      var div = document.createElement("div");
-      div.id = "state-" + i;
-      var cx = app.stateSize / 2 + app.stateMargin;
-      var cy = app.stateSize / 2 + app.stateMargin;
-      
-      var svg = createSvgElement("svg");
-      svg.setAttribute("width", app.stateSize + 2 * app.stateMargin);
-      svg.setAttribute("height", app.stateSize + 2 * app.stateMargin);
-      
+    function getStatePosition(i) {
+      var theta = 2.0 * 3.1415927 * i / app.nstates;
+      var x = svgWidth / 2 + circleRadius * Math.sin(theta);
+      var y = svgHeight / 2 - circleRadius * Math.cos(theta);
+      return {x: x, y: y};
+    }
+
+    var svg = createSvgElement("svg");
+    var circleRadius = 100;
+    var svgWidth = 2 * circleRadius + app.stateSize + 2 * app.stateMargin;
+    var svgHeight = 2 * circleRadius + app.stateSize + 2 * app.stateMargin;
+    var i, j;
+
+    svg.setAttribute("width", svgWidth);
+    svg.setAttribute("height", svgHeight);
+
+    for (i = 0; i < app.nstates; i++) {
+      var P = getStatePosition(i);
+      for (j = i + 1; j < app.nstates; j++) {
+        var Q = getStatePosition(j);
+        var edge = createSvgElement("line");
+        var lambda = 0.5 * app.stateSize / Math.sqrt(sqr(P.x - Q.x) + sqr(P.y - Q.y));
+
+        edge.setAttribute("x1", (1 - lambda) * P.x + lambda * Q.x);
+        edge.setAttribute("y1", (1 - lambda) * P.y + lambda * Q.y);
+        edge.setAttribute("x2", lambda * P.x + (1 - lambda) * Q.x);
+        edge.setAttribute("y2", lambda * P.y + (1 - lambda) * Q.y);
+        edge.setAttribute("stroke", "black");
+        edge.setAttribute("stroke-width", "2");
+        svg.appendChild(edge);
+      }
+    }
+
+    for (i = 0; i < app.nstates; i++) {
+      var position = getStatePosition(i);
+
       var circle = createSvgElement("circle");
-      circle.setAttribute("cx", cx);
-      circle.setAttribute("cy", cy);
+      circle.setAttribute("cx", position.x);
+      circle.setAttribute("cy", position.y);
       circle.setAttribute("r", app.stateSize / 2);
       circle.setAttribute("stroke", "black");
       circle.setAttribute("stroke-width", "2");
       circle.setAttribute("fill", "cornflowerblue");
       
       var text = createSvgElement("text");
-      text.setAttribute("x", cx);
-      text.setAttribute("y", cy + app.stateFontSize / 3);
+      text.setAttribute("x", position.x);
+      text.setAttribute("y", position.y + app.stateFontSize / 3);
       text.setAttribute("font-family", "Arial");
       text.setAttribute("font-size", app.stateFontSize + "px");
       text.setAttribute("text-anchor", "middle");
@@ -59,9 +95,8 @@ function Application() {
 
       svg.appendChild(circle);
       svg.appendChild(text);
-      div.appendChild(svg);
-      document.getElementById("graph").appendChild(div);
     }
+    document.getElementById("graph").appendChild(svg);
   }
   
   function createMatrix() {
@@ -145,7 +180,7 @@ function Application() {
     td = document.createElement("td");
     td.appendChild(document.createTextNode("Visits (%)"));
     tr.appendChild(td);
-    for (var i = 0; i < app.nstates; i++) {
+    for (i = 0; i < app.nstates; i++) {
       span = new ModelSpan(app.model, "percentage-" + i);
       td = document.createElement("td");
       td.appendChild(span.element);
