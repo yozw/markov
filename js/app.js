@@ -11,7 +11,7 @@ function Application() {
   this.stateSize = 50;
   this.arrowSize = 5;
   this.stateFontSize = 24;
-  this.nstates = 4;
+  this.nstates = 5;
 
   function createGraph() {
     function updateEdge(edge) {
@@ -47,7 +47,7 @@ function Application() {
     var circleRadius = 120;
     var svgWidth = 2 * circleRadius + app.stateSize + 2 * app.stateMargin;
     var svgHeight = 2 * circleRadius + app.stateSize + 2 * app.stateMargin;
-    var i, j;
+    var from, to;
 
     svg.setAttribute("width", svgWidth);
     svg.setAttribute("height", svgHeight);
@@ -55,13 +55,14 @@ function Application() {
     /**
      * Construct edges
      */
-    for (i = 0; i < app.nstates; i++) {
-      var P = getStatePosition(i);
-      for (j = 0; j < app.nstates; j++) {
-        var Q = getStatePosition(j);
+    for (from = 0; from < app.nstates; from++) {
+      var P = getStatePosition(from);
+      for (to = 0; to < app.nstates; to++) {
+        var Q = getStatePosition(to);
         var edge = createSvgElement("path");
         var A, B, C, M, R, normal, Z1, Z2;
-        if (i == j) {
+        if (from == to) {
+          // Construct self-edge
           M = new Vector(svgWidth / 2, svgHeight / 2);
           var MQ = Q.minus(M).normalize();
           normal = MQ.normal().normalize();
@@ -77,6 +78,7 @@ function Application() {
           edge.setAttribute("d", "M" + A + " C" + R1 + " " + R2 + " " + B
               + "M" + Z1 + " L" + C + " L" + Z2);
         } else {
+          // Construct non-self-edge
           var PQ = Q.minus(P);
           var lambda = 0.5 * app.stateSize / PQ.length();
           var controlSize = 10;
@@ -97,7 +99,7 @@ function Application() {
         edge.setAttribute("stroke", "black");
         edge.setAttribute("stroke-width", "2");
         edge.setAttribute("fill", "transparent");
-        app.model.listen("prob" + i + "," + j, updateEdge(edge));
+        app.model.listen("prob" + from + "," + to, updateEdge(edge));
         svg.appendChild(edge);
       }
     }
@@ -105,8 +107,8 @@ function Application() {
     /**
      * Construct nodes
      */
-    for (i = 0; i < app.nstates; i++) {
-      var position = getStatePosition(i);
+    for (from = 0; from < app.nstates; from++) {
+      var position = getStatePosition(from);
 
       var circle = createSvgElement("circle");
       circle.setAttribute("cx", position.x);
@@ -123,12 +125,12 @@ function Application() {
       text.setAttribute("font-size", app.stateFontSize + "px");
       text.setAttribute("text-anchor", "middle");
 
-      var textNode = document.createTextNode(i);
+      var textNode = document.createTextNode(from);
       text.appendChild(textNode);
       
-      app.model.listen("state-" + i, updateCircle(circle));
-      circle.onclick = circleClick(circle, i);
-      text.onclick = circleClick(circle, i);
+      app.model.listen("state-" + from, updateCircle(circle));
+      circle.onclick = circleClick(circle, from);
+      text.onclick = circleClick(circle, from);
 
       svg.appendChild(circle);
       svg.appendChild(text);
