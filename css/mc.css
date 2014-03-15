@@ -1,0 +1,127 @@
+body {
+  margin: 0px;
+}
+
+#contents {
+  padding: 2em;
+}
+
+.navbar-nav > li > a {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.navbar-nav a {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  cursor: pointer;
+}
+
+h4 {
+  margin-top:1em;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td, th {
+  margin: 0px;
+  padding: 2px;
+}
+
+input {
+  box-shadow: 2px 2px 5px #ddd;
+  border: 1px solid silver;
+  height: 24px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 4px;
+}
+
+input[type=submit], input[type=button] {
+  border-radius: 2px;
+  color: #444;
+  margin: 0px 5px;
+  min-height: 29px;
+  min-width: 65px;
+  -webkit-user-select: none;
+  padding: 8px 13px;
+  background-image: -webkit-linear-gradient(#ededed, #ededed 38%, #dedede);
+  text-shadow: 0 1px 0 rgb(240, 240, 240);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.75);
+}
+
+input[type=submit] {
+  font-weight: bold;  
+}
+
+#left {
+  display: inline-block;
+  width: 50%;
+  margin: 0;
+}
+
+#right {
+  display: inline-block;
+  width: 50%;
+  margin: 0;
+}
+
+#matrix input {
+  width: 40px;
+}
+
+#graph svg circle {
+  cursor: pointer;
+}
+
+#graph svg text {
+  cursor: pointer;
+}
+
+#stats table {
+  border: none;
+}
+
+#stats table th {
+  border-bottom: 1px solid black;
+  text-align: right;
+}
+
+#stats td {
+  text-align: right;
+  width: 50px;  
+}
+
+#stats td:first-child {
+  width: 100px;
+  text-align: left;
+}
+  
+#buttons {
+  font-size: 11pt;
+}
+
+#buttons span {
+  margin-left: 1em;
+}
+
+#buttons input {
+  margin-left: 1em;
+  width: 6em;
+}
+  
+#title {
+  text-align: left;
+  padding-bottom: 2em;
+}
+
+#main {
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex-flow: row;
+  flex-flow: row;
+}
+
+
