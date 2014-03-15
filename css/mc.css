@@ -3,7 +3,7 @@ body {
 }
 
 #contents {
-  padding: 2em;
+  padding: 1em;
 }
 
 .navbar-nav > li > a {
@@ -120,3 +120,19 @@ input[type=submit] {
 #title h2 {
   margin: 0;
 }
+
+.bs-callout {
+  margin: 20px 0;
+  padding: 20px;
+  border-left: 3px solid #eee;
+}
+
+.bs-callout-description {
+  background-color: #fcf8f2;
+  border-color: #f0ad4e;
+}
+
+.bs-callout-description h4 {
+  color: #f0ad4e;
+}
+
