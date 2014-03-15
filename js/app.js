@@ -3,6 +3,7 @@ function createSvgElement(tagName) {
 }
 
 function Application() {
+  "use strict"
   var app = this;
 
   this.model = new Model();
@@ -10,8 +11,7 @@ function Application() {
   this.stateSize = 50;
   this.stateFontSize = 24;
   this.nstates = 5;
-  this.stateDivs = [];
- 
+
   function createGraph() {
    function updateCircle(circle) {
       return function(value) {
@@ -105,16 +105,22 @@ function Application() {
   }
   
   function createStats() {
+    var tr;
+    var th;
+    var td;
+    var i;
+    var span;
+
     var steps = new ModelSpan(app.model, "steps");    
  
     var table = document.createElement("table");
-    var tr = document.createElement("tr");
+    tr = document.createElement("tr");
     
     // Add headers
-    var th = document.createElement("th");
+    th = document.createElement("th");
     tr.appendChild(th);
-    for (var i = 0; i < app.nstates; i++) {
-      var th = document.createElement("th");
+    for (i = 0; i < app.nstates; i++) {
+      th = document.createElement("th");
       var textNode = document.createTextNode(i);
       th.appendChild(textNode);
       tr.appendChild(th);
@@ -122,26 +128,26 @@ function Application() {
     table.appendChild(tr);
 
     // Add count statistics
-    var tr = document.createElement("tr");
-    var td = document.createElement("td");
+    tr = document.createElement("tr");
+    td = document.createElement("td");
     td.appendChild(document.createTextNode("Visits"));
     tr.appendChild(td);
-    for (var i = 0; i < app.nstates; i++) {
-      var span = new ModelSpan(app.model, "count-" + i);
-      var td = document.createElement("td");
+    for (i = 0; i < app.nstates; i++) {
+      span = new ModelSpan(app.model, "count-" + i);
+      td = document.createElement("td");
       td.appendChild(span.element);
       tr.appendChild(td);
     }
     table.appendChild(tr);
     
     // Add count statistics
-    var tr = document.createElement("tr");
-    var td = document.createElement("td");
+    tr = document.createElement("tr");
+    td = document.createElement("td");
     td.appendChild(document.createTextNode("Visits (%)"));
     tr.appendChild(td);
     for (var i = 0; i < app.nstates; i++) {
-      var span = new ModelSpan(app.model, "percentage-" + i);
-      var td = document.createElement("td");
+      span = new ModelSpan(app.model, "percentage-" + i);
+      td = document.createElement("td");
       td.appendChild(span.element);
       tr.appendChild(td);
     }
@@ -152,13 +158,14 @@ function Application() {
   }
 
   function performSteps(nsteps) {
+    var i;
     if (nsteps == undefined) {
       nsteps = 1;
     }
     var curState = app.model.get("state");
     
     var stateCount = [];
-    for (var i = 0; i < app.nstates; i++) {
+    for (i = 0; i < app.nstates; i++) {
       stateCount[i] = 0;
     }
     
@@ -166,7 +173,7 @@ function Application() {
       var nextState = app.nstates - 1;
       var z = Math.random();
       var sum = 0;
-      for (var i = 0; i < app.nstates - 1; i++) {
+      for (i = 0; i < app.nstates - 1; i++) {
         sum += parseFloat(app.model.get("prob" + curState + "," + i));
         if (z < sum) {
           nextState = i;
@@ -182,7 +189,7 @@ function Application() {
     var steps = app.model.get("steps") + nsteps;
     app.model.set("steps", steps);
     
-    for (var i = 0; i < app.nstates; i++) {
+    for (i = 0; i < app.nstates; i++) {
       var count = app.model.get("count-" + i);
       app.model.set("percentage-" + i, Math.round(100 * count / steps) + "%");
     }
@@ -213,7 +220,9 @@ function Application() {
   this.setMatrix = function(matrix) {
     for (var i = 0; i < app.nstates; i++) {
       for (var j = 0; j < app.nstates; j++) {
-        app.model.set("prob" + i + "," + j, matrix[i][j]);
+        var value = matrix[i][j];
+        value = +value.toFixed(2);
+        app.model.set("prob" + i + "," + j, value);
       }
     }
   };
