@@ -7,10 +7,11 @@ function Application() {
   var app = this;
 
   this.model = new Model();
-  this.stateMargin = 5;
+  this.stateMargin = 20;
   this.stateSize = 50;
+  this.arrowSize = 5;
   this.stateFontSize = 24;
-  this.nstates = 5;
+  this.nstates = 4;
 
   function createGraph() {
     function updateEdge(edge) {
@@ -18,7 +19,7 @@ function Application() {
         if (value < 1e-6) {
           edge.setAttribute("stroke-opacity", 0);
         } else {
-          edge.setAttribute("stroke-opacity", 0.3 + 0.7 * value);
+          edge.setAttribute("stroke-opacity", 0.1 + 0.8 * value);
         }
       };
     }
@@ -36,7 +37,7 @@ function Application() {
     }
 
     function getStatePosition(i) {
-      var theta = 2.0 * 3.1415927 * i / app.nstates;
+      var theta = 2.0 * 3.1415927 * (i - 0.5) / app.nstates;
       return new Vector(
           svgWidth / 2 + circleRadius * Math.sin(theta),
           svgHeight / 2 - circleRadius * Math.cos(theta));
@@ -51,31 +52,48 @@ function Application() {
     svg.setAttribute("width", svgWidth);
     svg.setAttribute("height", svgHeight);
 
+    /**
+     * Construct edges
+     */
     for (i = 0; i < app.nstates; i++) {
       var P = getStatePosition(i);
       for (j = 0; j < app.nstates; j++) {
-        if (i == j) {
-          continue;
-        }
         var Q = getStatePosition(j);
-        var PQ = Q.minus(P);
         var edge = createSvgElement("path");
-        var lambda = 0.5 * app.stateSize / PQ.length();
-        var controlSize = 10;
-        var normal = PQ.normal().normalize();
-        var R = P.add(Q).multiply(0.5).add(normal.multiply(controlSize));
+        var A, B, C, M, R, normal, Z1, Z2;
+        if (i == j) {
+          M = new Vector(svgWidth / 2, svgHeight / 2);
+          var MQ = Q.minus(M).normalize();
+          normal = MQ.normal().normalize();
+          var l = app.stateSize/(2*Math.sqrt(2));
+          A = Q.add(normal.multiply(l)).add(MQ.multiply(l));
+          B = Q.add(normal.multiply(-l)).add(MQ.multiply(l));
+          var R1 = Q.add(normal.multiply(l)).add(MQ.multiply(2.5*l));
+          var R2 = Q.add(normal.multiply(-l)).add(MQ.multiply(2.5*l));
+          C = Q.add(MQ.multiply(2.1*l)).add(normal.multiply(-app.arrowSize/2));
+          Z1 = C.add(normal.multiply(app.arrowSize)).add(MQ.multiply(-app.arrowSize));
+          Z2 = C.add(normal.multiply(app.arrowSize)).add(MQ.multiply(app.arrowSize));
 
-        var eps = 4;
-        var arrowSize = 6;
-        var A = P.multiply(1-lambda).add(Q.multiply(lambda)).add(normal.multiply(eps));
-        var B = Q.multiply(1-lambda).add(P.multiply(lambda)).add(normal.multiply(eps));
-        var C = A.add(B).multiply(0.5).add(normal.multiply(0.3 * controlSize));
-        var Z1 = C.add(normal.multiply(arrowSize)).add(PQ.normalize().multiply(-arrowSize));
-        var Z2 = C.add(normal.multiply(-arrowSize)).add(PQ.normalize().multiply(-arrowSize));
+          edge.setAttribute("d", "M" + A + " C" + R1 + " " + R2 + " " + B
+              + "M" + Z1 + " L" + C + " L" + Z2);
+        } else {
+          var PQ = Q.minus(P);
+          var lambda = 0.5 * app.stateSize / PQ.length();
+          var controlSize = 10;
+          normal = PQ.normal().normalize();
+          R = P.add(Q).multiply(0.5).add(normal.multiply(controlSize));
 
-        edge.setAttribute("d", "M" + A
-            + " Q" + R + " " + B
-            + " M" + Z1 + " L" + C + " L" + Z2);
+          var eps = 4;
+          A = P.multiply(1-lambda).add(Q.multiply(lambda)).add(normal.multiply(eps));
+          B = Q.multiply(1-lambda).add(P.multiply(lambda)).add(normal.multiply(eps));
+          C = A.add(B).multiply(0.5).add(normal.multiply(0.3 * controlSize));
+          Z1 = C.add(normal.multiply(app.arrowSize)).add(PQ.normalize().multiply(-app.arrowSize));
+          Z2 = C.add(normal.multiply(-app.arrowSize)).add(PQ.normalize().multiply(-app.arrowSize));
+
+          edge.setAttribute("d", "M" + A
+              + " Q" + R + " " + B
+              + " M" + Z1 + " L" + C + " L" + Z2);
+        }
         edge.setAttribute("stroke", "black");
         edge.setAttribute("stroke-width", "2");
         edge.setAttribute("fill", "transparent");
@@ -84,6 +102,9 @@ function Application() {
       }
     }
 
+    /**
+     * Construct nodes
+     */
     for (i = 0; i < app.nstates; i++) {
       var position = getStatePosition(i);
 
@@ -259,7 +280,7 @@ function Application() {
     } else {
       updateGraphColors();
     }
-  };
+  }
    
   this.selectState = function(state) {
     app.model.set("state", state);
@@ -284,7 +305,7 @@ function Application() {
       clearInterval(app.timer);
       app.timer = undefined;
     }
-  }
+  };
   
   this.runSimulationSteps = function(nsteps) {
     return function() {
@@ -327,23 +348,15 @@ function Application() {
   this.start = function() {
     $('.dropdown-toggle').dropdown();
 
-    createGraph();
     createButtons();
+    createGraph();
     createMatrix();
     createStats();
 
     app.setSpeed(2);
     app.selectState(0);
-    
-    var p = 0.3;
-    var q = 0.7;
-    app.setMatrix([ 
-       [p,q,0,0,0], 
-       [p,0,q,0,0],
-       [p,0,0,q,0],
-       [p,0,0,0,q],
-       [p,0,0,0,q]]);
-       
+
+    loadDefaultExample();
     app.resetSimulation();
   };
 }
