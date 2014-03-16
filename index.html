@@ -3,7 +3,8 @@
 <head>
   <title>Markov Chain simulator</title>
   <meta name="description" content="Online Markov chain simulator">
-  <meta name="keywords" content="Markov chain,simulation,stochastic,processes,time series,education">
+  <meta name="keywords"
+        content="Markov chain,discrete event,discrete time,simulation,stochastic,processes,time series,education">
   <meta name="author" content="Yori Zwols">
   <meta charset="UTF-8">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -35,16 +36,28 @@
         <li><a onclick="loadTwoClassWithSmallJumpExample()">Two classes with a small jumping probability</a></li>
       </ul>
     </li>
+    <li class="dropdown">
+      <a class="dropdown-toggle">Resources</a>
+      <ul class="dropdown-menu">
+        <li><a href="http://en.wikipedia.org/wiki/Markov_chain" target="_blank">Wikipedia on Markov chains</a></li>
+      </ul>
+    </li>
   </ul>
 </div>
 <div id="contents">
   <div>
     <div class="col-md-12">
       <div class="bs-callout bs-callout-description">
-        The matrix below gives the transition probabilities. The entry in
-        row $i$, column $j$ is the probability that the $j$ is the next state of the chain, given that it is currently
-        in state $j$. The graphical representation below shows the states, and the possible state transitions.
-        Click on "Run" to start the Markov chain.
+        <p>A <i>Markov chain</i> is a probabilistic model describing a system that changes from state to state,
+          and in which the probability of the system being in a certain state at a certain time step depends only on the
+          state of the preceding time step. The probability that the $j$ is the next state of the chain, given that the
+          current state is state $j$, is
+          called the <i>transition probability from $i$ to $j$</i>.
+          The matrix below gives the transition probabilities. The entry in row $i$, column $j$ is the transition
+          probability from $i$ to $j$. Note that the rows necessarily add up to 1.
+          The graphical representation below shows the states, and the possible state transitions.
+          Click &ldquo;Run&rdquo; to start the Markov chain. Click &ldquo;Examples&rdquo; in the top menu to choose
+          a different example, or change the probabilities yourself to experiment!</p>
       </div>
     </div>
   </div>
@@ -81,8 +94,11 @@
         <h4 class="modal-title">Information</h4>
       </div>
       <div class="modal-body">
-        <p><h3>Markov Chain Simulator</h3></p>
+        <p>
+
+        <h3>Markov Chain Simulator</h3></p>
         <p>&copy; 2014 Y. Zwols</p>
+
         <p>This web application is based on jQuery and Bootstrap.</p>
       </div>
       <div class="modal-footer">
@@ -109,6 +125,8 @@
 </script>
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+
+
 </script>
 </body>
 </html>

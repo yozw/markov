@@ -125,6 +125,7 @@ input[type=submit] {
   margin: 20px 0;
   padding: 20px;
   border-left: 3px solid #eee;
+  text-align: justify;
 }
 
 .bs-callout-description {
