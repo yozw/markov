@@ -136,3 +136,6 @@ input[type=submit] {
   color: #f0ad4e;
 }
 
+#plot {
+  height: 200px;
+}

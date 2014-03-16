@@ -2,8 +2,13 @@
 <html>
 <head>
   <title>Markov Chain simulator</title>
+  <meta name="description" content="Online Markov chain simulator">
+  <meta name="keywords" content="Markov chain,simulation,stochastic,processes,time series,education">
+  <meta name="author" content="Yori Zwols">
+  <meta charset="UTF-8">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="lib/bootstrap.min.js"></script>
+  <script src="lib/dygraph-combined.js"></script>
   <script src="js/model.js"></script>
   <script src="js/vector.js"></script>
   <script src="js/app.js"></script>
@@ -37,8 +42,8 @@
     <div class="col-md-12">
       <div class="bs-callout bs-callout-description">
         The matrix below gives the transition probabilities. The entry in
-        row $i$, column $j$ is the probability that the chain will be in state $j$ at time $t+1$, given that it is in
-        state $j$ at time $t$. The graphical representation shows the current state, and the possible state transitions.
+        row $i$, column $j$ is the probability that the $j$ is the next state of the chain, given that it is currently
+        in state $j$. The graphical representation below shows the states, and the possible state transitions.
         Click on "Run" to start the Markov chain.
       </div>
     </div>
@@ -60,6 +65,12 @@
       <div id="buttons"></div>
     </div>
   </div>
+  <div>
+    <div class="col-md-12">
+      <div id="plot">
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="about-box" class="modal fade">
@@ -71,7 +82,7 @@
       </div>
       <div class="modal-body">
         <p><h3>Markov Chain Simulator</h3></p>
-        <p>&copy; 2014 by Y. Zwols</p>
+        <p>&copy; 2014 Y. Zwols</p>
         <p>This web application is based on jQuery and Bootstrap.</p>
       </div>
       <div class="modal-footer">

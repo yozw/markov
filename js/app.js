@@ -12,6 +12,8 @@ function Application() {
   this.arrowSize = 5;
   this.stateFontSize = 24;
   this.nstates = 5;
+  this.showPlot = false;
+  this.samplePath = [[0, 0]];
 
   function createGraph() {
     function updateEdge(edge) {
@@ -231,6 +233,25 @@ function Application() {
     document.getElementById("stats").appendChild(table);
   }
 
+  function createPlot() {
+    if (app.showPlot) {
+      app.dygraph = new Dygraph(document.getElementById("plot"), app.samplePath, {
+        strokeWidth: 0.0,
+        drawPoints: true,
+        pointSize: 4,
+        highlightCircleSize: 6,
+            showRoller: true,
+            valueRange: [0.0, 5],
+            labels: ['Time', 'State']});
+    }
+  }
+
+  function updatePlot() {
+    if (app.showPlot) {
+      app.dygraph.updateOptions( { 'file': app.samplePath } );
+    }
+  }
+
   function performSteps(nsteps) {
     var i;
     if (nsteps == undefined) {
@@ -242,6 +263,8 @@ function Application() {
     for (i = 0; i < app.nstates; i++) {
       stateCount[i] = 0;
     }
+
+    var currentTime = app.model.get("steps");
     
     for (var step = 0; step < nsteps; step++) {
       var nextState = app.nstates - 1;
@@ -255,6 +278,7 @@ function Application() {
         }
       }
       app.model.set("count-" + nextState, app.model.get("count-" + nextState) + 1);
+      app.samplePath.push([currentTime + step, nextState + 1]);
       stateCount[nextState]++;
       curState = nextState;
     }
@@ -274,6 +298,9 @@ function Application() {
         app.model.set("state-" + i, stateCount[i] / nsteps);
       }
     }
+
+    // Update plot
+    updatePlot()
 
     if (nsteps == 1) {
       var speed = app.model.get("speed");
@@ -332,10 +359,12 @@ function Application() {
   this.resetSimulation = function() {
     app.stopSimulation();
     app.model.set("steps", 0);
+    app.samplePath = [];
     for (var i = 0; i < app.nstates; i++) {
       app.model.set("count-" + i, 0);
       app.model.set("percentage-" + i, "-");
     }
+    updatePlot();
   };
   
   this.setSpeed = function(speed) {
@@ -354,6 +383,7 @@ function Application() {
     createGraph();
     createMatrix();
     createStats();
+    createPlot();
 
     app.setSpeed(2);
     app.selectState(0);
