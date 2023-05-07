@@ -168,7 +168,7 @@ function Application() {
     var runButton = new Button("Run", app.startSimulation);
     var stopButton = new Button("Stop", app.stopSimulation);
     var resetButton = new Button("Reset", app.resetSimulation);
-    var speedLabel = new Span("Speed:");
+    var speedLabel = new Span("Steps/sec:");
     var speedInput = new ModelInput(app.model, "speed");
     
     var buttons = document.getElementById("buttons");
@@ -346,6 +346,13 @@ function Application() {
     app.stopSimulation();
 
     var speed = parseInt(app.model.get("speed"));
+    if (speed < 0) {
+      return;
+    }
+    if (speed === 0) {
+      speed = 100000;
+    }
+
     if (speed <= 30) {
       // do one step per call, and call each 1/speed seconds
       app.timer = setInterval(app.runSimulationSteps(1), 1000 / speed);
